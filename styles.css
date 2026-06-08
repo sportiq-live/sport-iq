@@ -1,0 +1,75 @@
+/* ==========================================================================
+   SPORT-IQ ARCHITECTURE STYLESHEET
+   ========================================================================== */
+
+/* [1] Administrative Background Image Scheduler Crossfader */
+.bg-slide {
+    transition: opacity 1.5s ease-in-out;
+}
+
+/* [2] Custom Layout Container Scrollbar Ergonomics */
+.custom-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.6);
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: rgba(16, 185, 129, 0.3);
+    border-radius: 4px;
+}
+
+/* [3] Shared Component Style Configurations */
+.tab-btn.active {
+    background-color: #10b981; /* Emerald-500 */
+    color: #020617; /* Slate-950 */
+}
+.tab-btn.inactive {
+    color: #94a3b8; /* Slate-400 */
+}
+.tab-btn.inactive:hover {
+    color: #ffffff;
+}
+
+/* [4] Football Pattern Embedded Vector Graphics Asset */
+.football-texture {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22none%22 stroke=%22black%22 stroke-width=%224%22/><polygon points=%2250,35 60,45 55,60 45,60 40,45%22 fill=%22black%22/><path d=%22M50,35 L50,5 M60,45 L90,35 M55,60 L75,90 M45,60 L25,90 M40,45 L10,35%22 stroke=%22black%22 stroke-width=%223%22/></svg>');
+}
+
+/* [5] Synchronized 3-Body Volley Keyframe Rigging */
+
+/* Left Striker Silhouettes Kick Velocity */
+@keyframes strikerA_swing {
+    0%, 100% { transform: scale-x(-1) rotate(-10deg); opacity: 0.2; }
+    5% { transform: scale-x(-1) rotate(20deg); opacity: 0.8; } /* KICK IMPACT POINT 1 */
+    15%, 95% { transform: scale-x(-1) rotate(-10deg); opacity: 0.2; }
+}
+
+/* Right Striker Silhouettes Kick Velocity */
+@keyframes strikerB_swing {
+    0%, 50% { transform: rotate(10deg); opacity: 0.2; }
+    55% { transform: rotate(-20deg); opacity: 0.8; } /* KICK IMPACT POINT 2 */
+    65%, 100% { transform: rotate(10deg); opacity: 0.2; }
+}
+
+/* Specky Volley Coordinate Volley Flight Arc Tracing */
+@keyframes specky_volley_reaction {
+    0%, 100% { transform: translate(-80px, 0px) scale(0.9); }
+    5% { transform: translate(-70px, -30px) scale(1.1); } /* Impact 1 Elastic Pop */
+    15% { transform: translate(-30px, -15px) scale(1); }
+    30% { transform: translate(30px, -15px) scale(1); }
+    50% { transform: translate(70px, -5px) scale(0.9); }
+    55% { transform: translate(60px, -35px) scale(1.1); } /* Impact 2 Elastic Pop */
+    65% { transform: translate(30px, -15px) scale(1); }
+    80% { transform: translate(-30px, -15px) scale(1); }
+}
+
+/* Animation Runtime Class Triggers */
+.animate-strikerA { animation: strikerA_swing 4.0s ease-in-out infinite; }
+.animate-strikerB { animation: strikerB_swing 4.0s ease-in-out infinite; }
+.animate-speckyVolley { animation: specky_volley_reaction 4.0s ease-in-out infinite; }
+
+/* Speech bubble custom transition physics */
+#specky-bubble {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
