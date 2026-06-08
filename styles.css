@@ -377,3 +377,11 @@
 #specky-bubble {
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
+/* Tactical Pitch background styling */
+.tactical-pitch {
+    background-image: radial-gradient(circle at center, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0) 75%),
+                      linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 20px 20px, 20px 20px;
+}

@@ -180,13 +180,188 @@
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
-            <div class="flex-1 overflow-y-auto custom-scroll py-4 space-y-4 text-xs text-slate-300 leading-relaxed">
-                <p>Generating comparative tactical metrics for Match ID 1. Historical weighting parameters complete...</p>
-                <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-emerald-400 font-mono text-[11px]">
-                    >> [SIMULATION ARRAY LOADED] << <br>
-                    USA Projected xG: 1.64 | PPDA: 8.4<br>
-                    BRA projected xG: 2.11 | PPDA: 11.2
+            <div class="flex-1 overflow-y-auto custom-scroll py-4 space-y-6 text-xs text-slate-300">
+                
+                <!-- Match Information Header Card -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950/60 border border-slate-800 p-3 rounded-xl shrink-0">
+                    <div>
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 block">Fixture</span>
+                        <span class="text-[11px] font-bold text-white font-mono">USA vs BRAZIL</span>
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 block">Venue</span>
+                        <span class="text-[11px] font-bold text-white">MetLife Stadium</span>
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 block">Surface Type</span>
+                        <span class="text-[11px] font-bold text-emerald-400">Kentucky Bluegrass</span>
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 block">Match ID</span>
+                        <span class="text-[11px] font-bold text-white font-mono">001-WC26</span>
+                    </div>
                 </div>
+
+                <!-- Teams & Flags / Color Blocks -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 shrink-0">
+                    <div class="bg-gradient-to-r from-blue-950/40 to-slate-900/60 border border-blue-900/40 p-3 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-6 bg-blue-600 rounded"></div>
+                            <div>
+                                <h3 class="text-sm font-black text-white tracking-wide uppercase">United States</h3>
+                                <p class="text-[9px] font-mono text-slate-400">Tactical Archetype: Direct Counter</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-black text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">USA</span>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-emerald-950/30 to-slate-900/60 border border-emerald-900/40 p-3 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-6 bg-yellow-500 rounded"></div>
+                            <div>
+                                <h3 class="text-sm font-black text-white tracking-wide uppercase">Brazil</h3>
+                                <p class="text-[9px] font-mono text-slate-400">Tactical Archetype: Jogo Bonito</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-black text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/20">BRA</span>
+                    </div>
+                </div>
+
+                <!-- Comparison Metrics Progress Bars -->
+                <div class="space-y-3 bg-slate-900/40 border border-slate-800/60 p-4 rounded-xl shrink-0">
+                    <h4 class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Simulated Tactical Indexes</h4>
+                    
+                    <!-- xG -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] font-mono">
+                            <span class="text-blue-400 font-bold">1.64 xG</span>
+                            <span class="text-slate-400 uppercase tracking-widest text-[9px] font-bold">Projected xG</span>
+                            <span class="text-yellow-400 font-bold">2.11 xG</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-950 rounded-full overflow-hidden flex">
+                            <div class="bg-blue-500 h-full" style="width: 44%"></div>
+                            <div class="bg-slate-800 h-full" style="width: 2%"></div>
+                            <div class="bg-yellow-500 h-full" style="width: 54%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- PPDA -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] font-mono">
+                            <span class="text-blue-400 font-bold">8.4 PPDA</span>
+                            <span class="text-slate-400 uppercase tracking-widest text-[9px] font-bold">Pressing Intensity (PPDA)</span>
+                            <span class="text-yellow-400 font-bold">11.2 PPDA</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-950 rounded-full overflow-hidden flex">
+                            <div class="bg-blue-500 h-full" style="width: 57%"></div>
+                            <div class="bg-slate-800 h-full" style="width: 2%"></div>
+                            <div class="bg-yellow-500 h-full" style="width: 41%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Attacking Speed -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] font-mono">
+                            <span class="text-blue-400 font-bold">88%</span>
+                            <span class="text-slate-400 uppercase tracking-widest text-[9px] font-bold">Attacking Velocity</span>
+                            <span class="text-yellow-400 font-bold">94%</span>
+                        </div>
+                        <div class="h-2 w-full bg-slate-950 rounded-full overflow-hidden flex">
+                            <div class="bg-blue-500 h-full" style="width: 48%"></div>
+                            <div class="bg-slate-800 h-full" style="width: 2%"></div>
+                            <div class="bg-yellow-500 h-full" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Miniature Tactical Pitch Grid -->
+                <div class="space-y-2 shrink-0">
+                    <h4 class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Projected Formations & Space Control</h4>
+                    <div class="relative w-full h-44 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden tactical-pitch flex items-center justify-between p-4">
+                        <!-- Pitch Line markings overlay -->
+                        <div class="absolute inset-0 z-0 opacity-15 pointer-events-none flex items-center justify-between px-2">
+                            <div class="w-1/2 h-[90%] border-r border-y border-slate-100 flex items-center justify-start">
+                                <div class="w-12 h-20 border-r border-y border-slate-100"></div>
+                            </div>
+                            <div class="w-1/2 h-[90%] border-l border-y border-slate-100 flex items-center justify-end">
+                                <div class="w-12 h-20 border-l border-y border-slate-100"></div>
+                            </div>
+                            <!-- Central Circle -->
+                            <div class="absolute top-[35%] left-[43%] w-12 h-12 rounded-full border border-slate-100"></div>
+                        </div>
+                        
+                        <!-- USA Nodes (Left Side 4-3-3) -->
+                        <div class="absolute inset-0 z-10 pointer-events-none">
+                            <!-- GK -->
+                            <span class="absolute top-[48%] left-[6%] w-2 h-2 rounded-full bg-blue-500 shadow-md shadow-blue-500/80 animate-pulse"></span>
+                            <!-- Defenders -->
+                            <span class="absolute top-[18%] left-[20%] w-2 h-2 rounded-full bg-blue-500 shadow-md"></span>
+                            <span class="absolute top-[38%] left-[18%] w-2 h-2 rounded-full bg-blue-500 shadow-md"></span>
+                            <span class="absolute top-[58%] left-[18%] w-2 h-2 rounded-full bg-blue-500 shadow-md"></span>
+                            <span class="absolute top-[78%] left-[20%] w-2 h-2 rounded-full bg-blue-500 shadow-md"></span>
+                            <!-- Midfielders -->
+                            <span class="absolute top-[30%] left-[34%] w-2 h-2 rounded-full bg-blue-500 shadow-md"></span>
+                            <span class="absolute top-[48%] left-[30%] w-2 h-2 rounded-full bg-blue-500 shadow-md"></span>
+                            <span class="absolute top-[66%] left-[34%] w-2 h-2 rounded-full bg-blue-500 shadow-md"></span>
+                            <!-- Attackers -->
+                            <span class="absolute top-[20%] left-[44%] w-2 h-2 rounded-full bg-blue-500 shadow-md"></span>
+                            <span class="absolute top-[48%] left-[48%] w-2 h-2 rounded-full bg-blue-500 shadow-md animate-pulse"></span>
+                            <span class="absolute top-[76%] left-[44%] w-2 h-2 rounded-full bg-blue-500 shadow-md"></span>
+                        </div>
+                        
+                        <!-- Brazil Nodes (Right Side 4-2-3-1) -->
+                        <div class="absolute inset-0 z-10 pointer-events-none">
+                            <!-- GK -->
+                            <span class="absolute top-[48%] right-[6%] w-2 h-2 rounded-full bg-yellow-500 shadow-md shadow-yellow-500/80 animate-pulse"></span>
+                            <!-- Defenders -->
+                            <span class="absolute top-[18%] right-[20%] w-2 h-2 rounded-full bg-yellow-500 shadow-md"></span>
+                            <span class="absolute top-[38%] right-[18%] w-2 h-2 rounded-full bg-yellow-500 shadow-md"></span>
+                            <span class="absolute top-[58%] right-[18%] w-2 h-2 rounded-full bg-yellow-500 shadow-md"></span>
+                            <span class="absolute top-[78%] right-[20%] w-2 h-2 rounded-full bg-yellow-500 shadow-md"></span>
+                            <!-- Defensive Mids -->
+                            <span class="absolute top-[35%] right-[32%] w-2 h-2 rounded-full bg-yellow-500 shadow-md"></span>
+                            <span class="absolute top-[61%] right-[32%] w-2 h-2 rounded-full bg-yellow-500 shadow-md"></span>
+                            <!-- Attacking Mids -->
+                            <span class="absolute top-[20%] right-[42%] w-2 h-2 rounded-full bg-yellow-500 shadow-md animate-pulse"></span>
+                            <span class="absolute top-[48%] right-[40%] w-2 h-2 rounded-full bg-yellow-500 shadow-md"></span>
+                            <span class="absolute top-[76%] right-[42%] w-2 h-2 rounded-full bg-yellow-500 shadow-md"></span>
+                            <!-- Striker -->
+                            <span class="absolute top-[48%] right-[48%] w-2 h-2 rounded-full bg-yellow-500 shadow-md"></span>
+                        </div>
+                        
+                        <!-- Mini Legend -->
+                        <div class="absolute bottom-2 left-3 bg-slate-900/95 border border-slate-800 px-2 py-1 rounded text-[8px] flex items-center space-x-3 z-20">
+                            <div class="flex items-center space-x-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span><span class="text-slate-400">USA (4-3-3)</span></div>
+                            <div class="flex items-center space-x-1"><span class="w-1.5 h-1.5 rounded-full bg-yellow-500 block"></span><span class="text-slate-400">BRA (4-2-3-1)</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Matchup Player Duel Card -->
+                <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-xl space-y-3 shrink-0">
+                    <h4 class="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-sans">Key Tactical Duel</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- USA Player -->
+                        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-lg flex items-center space-x-3">
+                            <div class="bg-blue-600/10 p-2 rounded-lg border border-blue-500/20 text-blue-400 shrink-0"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                            <div>
+                                <span class="text-[8px] font-bold uppercase tracking-wider text-slate-500 block">USA Left Winger</span>
+                                <h5 class="text-xs font-black text-white">Christian Pulisic</h5>
+                                <p class="text-[10px] text-slate-400 font-mono mt-0.5">3.4 dribbles/90 // 82% key pass</p>
+                            </div>
+                        </div>
+                        <!-- Brazil Player -->
+                        <div class="bg-slate-950/60 border border-slate-800 p-3 rounded-lg flex items-center space-x-3">
+                            <div class="bg-yellow-600/10 p-2 rounded-lg border border-yellow-500/20 text-yellow-400 shrink-0"><i data-lucide="sparkles" class="w-5 h-5"></i></div>
+                            <div>
+                                <span class="text-[8px] font-bold uppercase tracking-wider text-slate-500 block">BRA Left Winger</span>
+                                <h5 class="text-xs font-black text-white">Vinícius Júnior</h5>
+                                <p class="text-[10px] text-slate-400 font-mono mt-0.5">5.1 dribbles/90 // 89% shot conversion</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
