@@ -38,36 +38,338 @@
 
 /* [5] Synchronized 3-Body Volley Keyframe Rigging */
 
-/* Left Striker Silhouettes Kick Velocity */
-@keyframes strikerA_swing {
-    0%, 100% { transform: scale-x(-1) rotate(-10deg); opacity: 0.2; }
-    5% { transform: scale-x(-1) rotate(20deg); opacity: 0.8; } /* KICK IMPACT POINT 1 */
-    15%, 95% { transform: scale-x(-1) rotate(-10deg); opacity: 0.2; }
+/* Base positioning and state rules */
+.striker-silhouette {
+    transition: opacity 0.3s ease;
+    opacity: 0.3;
+}
+.striker-silhouette.active-kicker {
+    opacity: 0.95;
+}
+.player-body {
+    transform-origin: 50px 75px;
+}
+.player-leg-kick {
+    transform-origin: 50px 75px;
 }
 
-/* Right Striker Silhouettes Kick Velocity */
-@keyframes strikerB_swing {
-    0%, 50% { transform: rotate(10deg); opacity: 0.2; }
-    55% { transform: rotate(-20deg); opacity: 0.8; } /* KICK IMPACT POINT 2 */
-    65%, 100% { transform: rotate(10deg); opacity: 0.2; }
+/* ==========================================
+   SHOT 1: PASS (Flat ground pass)
+   ========================================== */
+.shot-pass #player-left .player-leg-kick { animation: pass_kickA 4.5s ease-in-out infinite; }
+.shot-pass #player-right .player-leg-kick { animation: pass_kickB 4.5s ease-in-out infinite; }
+.shot-pass #specky-ball { animation: pass_ball 4.5s ease-in-out infinite; }
+
+@keyframes pass_kickA {
+    0%, 100% { transform: rotate(0deg); }
+    5% { transform: rotate(35deg); }
+    15% { transform: rotate(0deg); }
+}
+@keyframes pass_kickB {
+    0%, 50%, 100% { transform: rotate(0deg); }
+    55% { transform: rotate(35deg); }
+    65% { transform: rotate(0deg); }
+}
+@keyframes pass_ball {
+    0%, 100% { transform: translate(-85px, 8px) rotate(0deg); }
+    5% { transform: translate(-75px, 8px) rotate(30deg); }
+    50% { transform: translate(75px, 8px) rotate(720deg); }
+    55% { transform: translate(65px, 8px) rotate(750deg); }
+    95% { transform: translate(-85px, 8px) rotate(1440deg); }
 }
 
-/* Specky Volley Coordinate Volley Flight Arc Tracing */
-@keyframes specky_volley_reaction {
-    0%, 100% { transform: translate(-80px, 0px) scale(0.9); }
-    5% { transform: translate(-70px, -30px) scale(1.1); } /* Impact 1 Elastic Pop */
-    15% { transform: translate(-30px, -15px) scale(1); }
-    30% { transform: translate(30px, -15px) scale(1); }
-    50% { transform: translate(70px, -5px) scale(0.9); }
-    55% { transform: translate(60px, -35px) scale(1.1); } /* Impact 2 Elastic Pop */
-    65% { transform: translate(30px, -15px) scale(1); }
-    80% { transform: translate(-30px, -15px) scale(1); }
+/* ==========================================
+   SHOT 2: VOLLEY (Mid-air strike)
+   ========================================== */
+.shot-volley #player-left .player-leg-kick { animation: volley_kickA 4.5s ease-in-out infinite; }
+.shot-volley #player-right .player-leg-kick { animation: volley_kickB 4.5s ease-in-out infinite; }
+.shot-volley #specky-ball { animation: volley_ball 4.5s ease-in-out infinite; }
+
+@keyframes volley_kickA {
+    0%, 100% { transform: rotate(0deg); }
+    5% { transform: rotate(50deg); }
+    15% { transform: rotate(0deg); }
+}
+@keyframes volley_kickB {
+    0%, 50%, 100% { transform: rotate(0deg); }
+    55% { transform: rotate(50deg); }
+    65% { transform: rotate(0deg); }
+}
+@keyframes volley_ball {
+    0%, 100% { transform: translate(-85px, -10px); }
+    5% { transform: translate(-75px, -15px); }
+    27% { transform: translate(0px, -35px); }
+    50% { transform: translate(75px, -10px); }
+    55% { transform: translate(65px, -15px); }
+    77% { transform: translate(0px, -35px); }
+    95% { transform: translate(-85px, -10px); }
 }
 
-/* Animation Runtime Class Triggers */
-.animate-strikerA { animation: strikerA_swing 4.0s ease-in-out infinite; }
-.animate-strikerB { animation: strikerB_swing 4.0s ease-in-out infinite; }
-.animate-speckyVolley { animation: specky_volley_reaction 4.0s ease-in-out infinite; }
+/* ==========================================
+   SHOT 3: HALF-VOLLEY (Strike after bounce)
+   ========================================== */
+.shot-halfvolley #player-left .player-leg-kick { animation: volley_kickA 4.5s ease-in-out infinite; }
+.shot-halfvolley #player-right .player-leg-kick { animation: volley_kickB 4.5s ease-in-out infinite; }
+.shot-halfvolley #specky-ball { animation: halfvolley_ball 4.5s ease-in-out infinite; }
+
+@keyframes halfvolley_ball {
+    0%, 100% { transform: translate(-85px, -20px); }
+    3% { transform: translate(-80px, 8px); } /* Bounce */
+    6% { transform: translate(-75px, 6px); } /* Strike */
+    27% { transform: translate(0px, -25px); }
+    50% { transform: translate(75px, -20px); }
+    53% { transform: translate(80px, 8px); } /* Bounce */
+    56% { transform: translate(75px, 6px); } /* Strike */
+    77% { transform: translate(0px, -25px); }
+    95% { transform: translate(-85px, -20px); }
+}
+
+/* ==========================================
+   SHOT 4: HEADER (Forehead strike)
+   ========================================== */
+.shot-header #player-left .player-body { animation: header_bodyA 4.5s ease-in-out infinite; }
+.shot-header #player-right .player-body { animation: header_bodyB 4.5s ease-in-out infinite; }
+.shot-header #specky-ball { animation: header_ball 4.5s ease-in-out infinite; }
+
+@keyframes header_bodyA {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    5% { transform: translate(15px, -15px) rotate(15deg); }
+    15% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes header_bodyB {
+    0%, 50%, 100% { transform: translate(0, 0) rotate(0deg); }
+    55% { transform: translate(15px, -15px) rotate(15deg); }
+    65% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes header_ball {
+    0%, 100% { transform: translate(-65px, -45px); }
+    5% { transform: translate(-55px, -50px); }
+    27% { transform: translate(0px, -80px); }
+    50% { transform: translate(65px, -45px); }
+    55% { transform: translate(55px, -50px); }
+    77% { transform: translate(0px, -80px); }
+    95% { transform: translate(-65px, -45px); }
+}
+
+/* ==========================================
+   SHOT 5: BICYCLE KICK (Overhead scissor)
+   ========================================== */
+.shot-bicycle #player-left .player-body { animation: bicycle_bodyA 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.shot-bicycle #player-right .player-body { animation: bicycle_bodyB 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.shot-bicycle #specky-ball { animation: bicycle_ball 4.5s ease-in-out infinite; }
+
+@keyframes bicycle_bodyA {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    5%, 12% { transform: translate(25px, -35px) rotate(-190deg); }
+    25% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes bicycle_bodyB {
+    0%, 50%, 100% { transform: translate(0, 0) rotate(0deg); }
+    55%, 62% { transform: translate(25px, -35px) rotate(-190deg); }
+    75% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes bicycle_ball {
+    0%, 100% { transform: translate(-65px, -35px); }
+    6% { transform: translate(-55px, -40px); }
+    25% { transform: translate(0px, -95px); }
+    50% { transform: translate(65px, -35px); }
+    56% { transform: translate(55px, -40px); }
+    75% { transform: translate(0px, -95px); }
+    95% { transform: translate(-65px, -35px); }
+}
+
+/* ==========================================
+   SHOT 6: CHIP / LOB (Looping arc)
+   ========================================== */
+.shot-chip #player-left .player-leg-kick { animation: pass_kickA 4.5s ease-in-out infinite; }
+.shot-chip #player-right .player-leg-kick { animation: pass_kickB 4.5s ease-in-out infinite; }
+.shot-chip #specky-ball { animation: chip_ball 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite; }
+
+@keyframes chip_ball {
+    0%, 100% { transform: translate(-85px, 8px); }
+    5% { transform: translate(-75px, -5px); }
+    27% { transform: translate(0px, -75px); }
+    50% { transform: translate(75px, 8px); }
+    55% { transform: translate(65px, -5px); }
+    77% { transform: translate(0px, -75px); }
+    95% { transform: translate(-85px, 8px); }
+}
+
+/* ==========================================
+   SHOT 7: LOW DRIVE (Powerful flat shot)
+   ========================================== */
+.shot-drive #player-left .player-leg-kick { animation: volley_kickA 4.5s ease-in-out infinite; }
+.shot-drive #player-right .player-leg-kick { animation: volley_kickB 4.5s ease-in-out infinite; }
+.shot-drive #specky-ball { animation: drive_ball 4.5s cubic-bezier(0.08, 0.82, 0.17, 1) infinite; }
+
+@keyframes drive_ball {
+    0%, 100% { transform: translate(-85px, 8px); }
+    5% { transform: translate(-75px, 6px); }
+    35% { transform: translate(75px, 4px); }
+    50% { transform: translate(75px, 8px); }
+    55% { transform: translate(65px, 6px); }
+    85% { transform: translate(-85px, 4px); }
+    95% { transform: translate(-85px, 8px); }
+}
+
+/* ==========================================
+   SHOT 8: CURVER / BEND (S-path flight)
+   ========================================== */
+.shot-curver #player-left .player-leg-kick { animation: volley_kickA 4.5s ease-in-out infinite; }
+.shot-curver #player-right .player-leg-kick { animation: volley_kickB 4.5s ease-in-out infinite; }
+.shot-curver #specky-ball { animation: curver_ball 4.5s ease-in-out infinite; }
+
+@keyframes curver_ball {
+    0%, 100% { transform: translate(-85px, 8px) scale(1); }
+    5% { transform: translate(-75px, 0px) scale(1); }
+    20% { transform: translate(-20px, -45px) scale(0.7); }
+    35% { transform: translate(40px, -20px) scale(1.1); }
+    50% { transform: translate(75px, 8px) scale(1); }
+    55% { transform: translate(65px, 0px) scale(1); }
+    70% { transform: translate(20px, -45px) scale(0.7); }
+    85% { transform: translate(-40px, -20px) scale(1.1); }
+    95% { transform: translate(-85px, 8px) scale(1); }
+}
+
+/* ==========================================
+   SHOT 9: KNUCKLEBALL (Erratic zigzag)
+   ========================================== */
+.shot-knuckle #player-left .player-leg-kick { animation: volley_kickA 4.5s ease-in-out infinite; }
+.shot-knuckle #player-right .player-leg-kick { animation: volley_kickB 4.5s ease-in-out infinite; }
+.shot-knuckle #specky-ball { animation: knuckle_ball 4.5s linear infinite; }
+
+@keyframes knuckle_ball {
+    0%, 100% { transform: translate(-85px, 0px); }
+    5% { transform: translate(-75px, -5px); }
+    12% { transform: translate(-40px, -15px); }
+    18% { transform: translate(-20px, -35px); }
+    24% { transform: translate(0px, -25px); }
+    30% { transform: translate(20px, -45px); }
+    38% { transform: translate(45px, -30px); }
+    50% { transform: translate(75px, 0px); }
+    55% { transform: translate(65px, -5px); }
+    62% { transform: translate(40px, -15px); }
+    68% { transform: translate(20px, -35px); }
+    74% { transform: translate(0px, -25px); }
+    80% { transform: translate(-20px, -45px); }
+    88% { transform: translate(-45px, -30px); }
+    95% { transform: translate(-85px, 0px); }
+}
+
+/* ==========================================
+   SHOT 10: SCORPION KICK (Heel strike)
+   ========================================== */
+.shot-scorpion #player-left .player-body { animation: scorpion_bodyA 4.5s ease-in-out infinite; }
+.shot-scorpion #player-right .player-body { animation: scorpion_bodyB 4.5s ease-in-out infinite; }
+.shot-scorpion #specky-ball { animation: scorpion_ball 4.5s ease-in-out infinite; }
+
+@keyframes scorpion_bodyA {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    5%, 12% { transform: translate(20px, 15px) rotate(45deg); }
+    20% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes scorpion_bodyB {
+    0%, 50%, 100% { transform: translate(0, 0) rotate(0deg); }
+    55%, 62% { transform: translate(20px, 15px) rotate(45deg); }
+    70% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes scorpion_ball {
+    0%, 100% { transform: translate(-75px, -25px); }
+    5% { transform: translate(-65px, -15px); }
+    27% { transform: translate(0px, -55px); }
+    50% { transform: translate(75px, -25px); }
+    55% { transform: translate(65px, -15px); }
+    77% { transform: translate(0px, -55px); }
+    95% { transform: translate(-75px, -25px); }
+}
+
+/* ==========================================
+   SHOT 11: TRIVELA (Outside-foot curve)
+   ========================================== */
+.shot-trivela #player-left .player-leg-kick { animation: pass_kickA 4.5s ease-in-out infinite; }
+.shot-trivela #player-right .player-leg-kick { animation: pass_kickB 4.5s ease-in-out infinite; }
+.shot-trivela #specky-ball { animation: trivela_ball 4.5s ease-in-out infinite; }
+
+@keyframes trivela_ball {
+    0%, 100% { transform: translate(-85px, 8px) scale(1); }
+    5% { transform: translate(-75px, 4px) scale(1); }
+    25% { transform: translate(-10px, -50px) scale(1.3); }
+    50% { transform: translate(75px, 8px) scale(1); }
+    55% { transform: translate(65px, 4px) scale(1); }
+    75% { transform: translate(10px, -50px) scale(1.3); }
+    95% { transform: translate(-85px, 8px) scale(1); }
+}
+
+/* ==========================================
+   SHOT 12: RABONA (Leg-crossed swing)
+   ========================================== */
+.shot-rabona #player-left .player-leg-kick { animation: rabona_kickA 4.5s ease-in-out infinite; }
+.shot-rabona #player-right .player-leg-kick { animation: rabona_kickB 4.5s ease-in-out infinite; }
+.shot-rabona #specky-ball { animation: volley_ball 4.5s ease-in-out infinite; }
+
+@keyframes rabona_kickA {
+    0%, 100% { transform: rotate(0deg); }
+    5% { transform: translate(-10px, -5px) rotate(-45deg); }
+    15% { transform: rotate(0deg); }
+}
+@keyframes rabona_kickB {
+    0%, 50%, 100% { transform: rotate(0deg); }
+    55% { transform: translate(-10px, -5px) rotate(-45deg); }
+    65% { transform: rotate(0deg); }
+}
+
+/* ==========================================
+   SHOT 13: PANENKA (Delicate penalty chip)
+   ========================================== */
+.shot-panenka #player-left .player-leg-kick { animation: pass_kickA 4.5s ease-in-out infinite; }
+.shot-panenka #player-right .player-leg-kick { animation: pass_kickB 4.5s ease-in-out infinite; }
+.shot-panenka #specky-ball { animation: panenka_ball 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+
+@keyframes panenka_ball {
+    0%, 100% { transform: translate(-85px, 8px); }
+    5% { transform: translate(-75px, 2px); }
+    27% { transform: translate(0px, -60px); }
+    50% { transform: translate(75px, 8px); }
+    55% { transform: translate(65px, 2px); }
+    77% { transform: translate(0px, -60px); }
+    95% { transform: translate(-85px, 8px); }
+}
+
+/* ==========================================
+   SHOT 14: DIVING HEADER (Horizontal dive)
+   ========================================== */
+.shot-diving #player-left .player-body { animation: diving_bodyA 4.5s ease-in-out infinite; }
+.shot-diving #player-right .player-body { animation: diving_bodyB 4.5s ease-in-out infinite; }
+.shot-diving #specky-ball { animation: drive_ball 4.5s ease-in-out infinite; }
+
+@keyframes diving_bodyA {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    5%, 15% { transform: translate(30px, 20px) rotate(80deg); }
+    30% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes diving_bodyB {
+    0%, 50%, 100% { transform: translate(0, 0) rotate(0deg); }
+    55%, 65% { transform: translate(30px, 20px) rotate(80deg); }
+    80% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ==========================================
+   SHOT 15: SLIDING SHOT (Sliding grass poke)
+   ========================================== */
+.shot-sliding #player-left .player-body { animation: sliding_bodyA 4.5s ease-in-out infinite; }
+.shot-sliding #player-right .player-body { animation: sliding_bodyB 4.5s ease-in-out infinite; }
+.shot-sliding #specky-ball { animation: pass_ball 4.5s ease-in-out infinite; }
+
+@keyframes sliding_bodyA {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    5%, 15% { transform: translate(25px, 25px) rotate(45deg); }
+    25% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes sliding_bodyB {
+    0%, 50%, 100% { transform: translate(0, 0) rotate(0deg); }
+    55%, 65% { transform: translate(25px, 25px) rotate(45deg); }
+    75% { transform: translate(0, 0) rotate(0deg); }
+}
 
 /* Speech bubble custom transition physics */
 #specky-bubble {

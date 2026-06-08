@@ -72,86 +72,130 @@ document.addEventListener("DOMContentLoaded", () => {
     const eyes = document.getElementById('specky-eyes');
     const mouth = document.getElementById('specky-mouth');
     const speckyBall = document.getElementById('specky-ball');
+    const animContainer = document.getElementById('animation-container');
+    const pLeft = document.getElementById('player-left');
+    const pRight = document.getElementById('player-right');
 
-    const phrases = [
-        "Click me to see match insights!",
-        "Whoa! USA vs Brazil data streams are heavy!",
-        "Ready to compile historical models?",
-        "Analyzing high-press metrics live!"
+    // Definition of the 15 sequenced shots
+    const SHOTS = [
+        { class: "shot-pass", leftText: "Left player passes! 🎯", rightText: "Pass controlled and returned! 🔄" },
+        { class: "shot-volley", leftText: "Boom! Volley hit! 🚀", rightText: "Intercepted and volleyed back! ⚔️" },
+        { class: "shot-halfvolley", leftText: "Half-volley strike! 💥", rightText: "Returned after bounce! 🔄" },
+        { class: "shot-header", leftText: "Great header! ⚽", rightText: "Headed back clear! 🛡️" },
+        { class: "shot-bicycle", leftText: "Amazing Bicycle Kick! 🚲", rightText: "Cleared with a header! 🛡️" },
+        { class: "shot-chip", leftText: "Delicate chipped lob! 🎈", rightText: "Chipped back into play! 🔄" },
+        { class: "shot-drive", leftText: "Powerful Low Drive! ⚡", rightText: "Blocked and driven back! 🧱" },
+        { class: "shot-curver", leftText: "Bending curver! 💫", rightText: "Curved return! 🔄" },
+        { class: "shot-knuckle", leftText: "Erratic Knuckleball! 🌀", rightText: "Knuckleball controlled! 🤝" },
+        { class: "shot-scorpion", leftText: "Scorpion Kick! 🦂", rightText: "Heel flicked back! 🦂" },
+        { class: "shot-trivela", leftText: "Trivela outside-spin! 🌀", rightText: "Trivela curve returned! 🔄" },
+        { class: "shot-rabona", leftText: "Rabona trick shot! 🪄", rightText: "Rabona returned! 🪄" },
+        { class: "shot-panenka", leftText: "Cool Panenka penalty! 🧊", rightText: "Caught and kicked back! 🧤" },
+        { class: "shot-diving", leftText: "Diving Header! 🤿", rightText: "Dived and returned! 🛡️" },
+        { class: "shot-sliding", leftText: "Sliding shot poke! 🌱", rightText: "Slid and returned! 🛷" }
     ];
+
+    let currentShotIdx = 0;
+    let timelineTimeouts = [];
 
     // Facial expression state definitions
     const setExpressionBase = () => {
-        eyes.style.transform = 'scaleY(1) translateY(0)';
+        if (!eyes || !mouth) return;
+        eyes.style.transform = 'scaleY(1) translateY(0) skewY(0)';
         mouth.style.height = '4px';
         mouth.style.width = '12px';
         mouth.style.borderRadius = '9999px';
     };
 
     const setExpressionSurprised = () => {
-        eyes.style.transform = 'scale(1.2) translateY(-1px)';
+        if (!eyes || !mouth) return;
+        eyes.style.transform = 'scale(1.2) translateY(-1px) skewY(0)';
         mouth.style.height = '8px';
         mouth.style.width = '8px';
         mouth.style.borderRadius = '9999px';
     };
 
     const setExpressionConfused = () => {
+        if (!eyes || !mouth) return;
         eyes.style.transform = 'skewY(10deg)';
         mouth.style.height = '4px';
+        mouth.style.width = '10px';
         mouth.style.borderRadius = '9999px';
     };
 
     const setExpressionExcited = () => {
-        eyes.style.transform = 'scaleY(0.5)';
+        if (!eyes || !mouth) return;
+        eyes.style.transform = 'scaleY(0.5) translateY(1px) skewY(0)';
         mouth.style.height = '6px';
         mouth.style.width = '14px';
         mouth.style.borderRadius = '0 0 12px 12px';
     };
 
-    // Synchronized execution loop (matches the 4.0s loop cycle of the CSS layout)
-    const runSpeckyTimeline = () => {
-        if (!speckyBall || !eyes || !mouth || !bubble) return;
+    const clearTimeouts = () => {
+        timelineTimeouts.forEach(t => clearTimeout(t));
+        timelineTimeouts = [];
+    };
 
+    const runShotSequencer = () => {
+        if (!speckyBall || !animContainer || !bubble || !bubbleText) return;
+
+        // Clear previous state
+        clearTimeouts();
+        SHOTS.forEach(s => animContainer.classList.remove(s.class));
+        if (pLeft) pLeft.classList.remove('active-kicker');
+        if (pRight) pRight.classList.remove('active-kicker');
+
+        const activeShot = SHOTS[currentShotIdx];
+        animContainer.classList.add(activeShot.class);
+
+        // 1. Initial State: Left kicker active
         setExpressionBase();
+        if (pLeft) pLeft.classList.add('active-kicker');
 
-        // IMPACT POINT 1: Left player strike response (0.2s mark)
-        setTimeout(() => {
+        // 2. Impact Point 1: Left player hits the ball (0.2s mark)
+        timelineTimeouts.push(setTimeout(() => {
             setExpressionSurprised();
-            if (bubbleText) bubbleText.innerText = "Oof! USA metrics kicked!";
+            bubbleText.innerText = activeShot.leftText;
             bubble.style.opacity = '1';
             bubble.style.transform = 'translateY(0)';
-            speckyBall.style.boxShadow = "0 25px 50px -12px rgba(59,130,246, 0.6)"; // Pulse Blue
-        }, 200);
+            speckyBall.style.boxShadow = "0 25px 50px -12px rgba(59,130,246, 0.7)"; // Glow Blue
+        }, 200));
 
-        // Mid-air flight settlement (1.0s mark)
-        setTimeout(() => {
+        // 3. Flight Phase: Ball mid-air (1.1s mark)
+        timelineTimeouts.push(setTimeout(() => {
             setExpressionConfused();
             bubble.style.opacity = '0';
             bubble.style.transform = 'translateY(2px)';
-        }, 1000);
+            if (pLeft) pLeft.classList.remove('active-kicker');
+            if (pRight) pRight.classList.add('active-kicker');
+        }, 1100));
 
-        // IMPACT POINT 2: Right player strike response (2.2s mark)
-        setTimeout(() => {
+        // 4. Impact Point 2: Right player hits the ball back (2.2s mark)
+        timelineTimeouts.push(setTimeout(() => {
             setExpressionSurprised();
-            if (bubbleText) bubbleText.innerText = "Boom! Brazil data received!";
+            bubbleText.innerText = activeShot.rightText;
             bubble.style.opacity = '1';
             bubble.style.transform = 'translateY(0)';
-            speckyBall.style.boxShadow = "0 25px 50px -12px rgba(244,63,94, 0.6)"; // Pulse Rose
-        }, 2200);
+            speckyBall.style.boxShadow = "0 25px 50px -12px rgba(244,63,94, 0.7)"; // Glow Rose
+        }, 2200));
 
-        // Return mid-air flight settlement (3.0s mark)
-        setTimeout(() => {
+        // 5. Flight Phase Back: Ball returning (3.2s mark)
+        timelineTimeouts.push(setTimeout(() => {
             setExpressionBase();
             bubble.style.opacity = '0';
             bubble.style.transform = 'translateY(2px)';
             speckyBall.style.boxShadow = "none";
-        }, 3000);
+            if (pRight) pRight.classList.remove('active-kicker');
+        }, 3200));
+
+        // Advance index for next cycle
+        currentShotIdx = (currentShotIdx + 1) % SHOTS.length;
     };
 
-    // Initialize tracking logic and set interval run speed
-    if (speckyBall) {
-        runSpeckyTimeline();
-        setInterval(runSpeckyTimeline, 4000);
+    // Start running the sequence
+    if (speckyBall && animContainer) {
+        runShotSequencer();
+        setInterval(runShotSequencer, 4500); // Sequence loops every 4.5 seconds
     }
 
 
