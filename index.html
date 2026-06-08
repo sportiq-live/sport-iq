@@ -95,39 +95,43 @@
 
         <div id="animation-container" class="relative w-80 h-36 flex items-end justify-center overflow-visible">
             <div id="player-left" class="striker-silhouette left absolute left-[-40px] bottom-0 w-24 h-32 pointer-events-none origin-bottom">
-                <svg viewBox="0 0 100 120" class="w-full h-full overflow-visible">
+                <svg viewBox="0 0 100 120" class="w-full h-full overflow-visible" fill="none">
                     <defs>
                         <filter id="glow-blue" x="-30%" y="-30%" width="160%" height="160%">
                             <feGaussianBlur stdDeviation="4" result="blur" />
                             <feComposite in="SourceGraphic" in2="blur" operator="over" />
                         </filter>
                     </defs>
-                    <g class="player-body" style="transform-origin: 50px 80px;">
+                    <g class="player-body" style="transform-origin: 50px 75px;">
                         <circle cx="50" cy="25" r="8" fill="#60a5fa" filter="url(#glow-blue)" />
                         <path class="player-torso" d="M50,33 L50,75" stroke="#3b82f6" stroke-width="9" stroke-linecap="round" />
                         <path class="player-arm-back" d="M50,38 L30,48 L15,42" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
                         <path class="player-arm-front" d="M50,38 L68,48 L82,52" stroke="#60a5fa" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
                         <path class="player-leg-support" d="M50,75 L35,92 L25,116" stroke="#1d4ed8" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path class="player-leg-kick" d="M50,75 L68,95 L88,102" stroke="#60a5fa" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                        <g class="player-leg-kick">
+                            <path d="M50,75 L68,95 L88,102" stroke="#60a5fa" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                        </g>
                     </g>
                 </svg>
             </div>
 
             <div id="player-right" class="striker-silhouette right absolute right-[-40px] bottom-0 w-24 h-32 pointer-events-none origin-bottom scale-x-[-1]">
-                <svg viewBox="0 0 100 120" class="w-full h-full overflow-visible">
+                <svg viewBox="0 0 100 120" class="w-full h-full overflow-visible" fill="none">
                     <defs>
                         <filter id="glow-rose" x="-30%" y="-30%" width="160%" height="160%">
                             <feGaussianBlur stdDeviation="4" result="blur" />
                             <feComposite in="SourceGraphic" in2="blur" operator="over" />
                         </filter>
                     </defs>
-                    <g class="player-body" style="transform-origin: 50px 80px;">
+                    <g class="player-body" style="transform-origin: 50px 75px;">
                         <circle cx="50" cy="25" r="8" fill="#fb7185" filter="url(#glow-rose)" />
                         <path class="player-torso" d="M50,33 L50,75" stroke="#f43f5e" stroke-width="9" stroke-linecap="round" />
                         <path class="player-arm-back" d="M50,38 L30,48 L15,42" stroke="#be123c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
                         <path class="player-arm-front" d="M50,38 L68,48 L82,52" stroke="#fb7185" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
                         <path class="player-leg-support" d="M50,75 L35,92 L25,116" stroke="#be123c" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path class="player-leg-kick" d="M50,75 L68,95 L88,102" stroke="#fb7185" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                        <g class="player-leg-kick">
+                            <path d="M50,75 L68,95 L88,102" stroke="#fb7185" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                        </g>
                     </g>
                 </svg>
             </div>
