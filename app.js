@@ -12,28 +12,62 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ---------------------------------------------------------
-    // [1] ADMINISTRATIVE INTERFACE BACKGROUND DAILY SLIDER
+    // [1] DYNAMIC THEME BACKGROUND INITIALIZATION
     // ---------------------------------------------------------
-    let slideToggle = true;
-    const s1 = document.getElementById('slide-1');
-    const s2 = document.getElementById('slide-2');
+    const initAppBackground = () => {
+        const bgContainer = document.getElementById('app-background');
+        if (!bgContainer || !window.SPORT_IQ_THEME) return;
 
-    setInterval(() => {
-        if (s1 && s2) {
-            if (slideToggle) {
-                s1.classList.remove('opacity-30', 'active');
-                s1.classList.add('opacity-0');
-                s2.classList.remove('opacity-0');
-                s2.classList.add('opacity-30', 'active');
-            } else {
-                s2.classList.remove('opacity-30', 'active');
-                s2.classList.add('opacity-0');
-                s1.classList.remove('opacity-0');
-                s1.classList.add('opacity-30', 'active');
+        const config = window.SPORT_IQ_THEME;
+
+        if (config.type === 'video') {
+            const video = document.createElement('video');
+            video.className = 'absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-luminosity';
+            video.autoplay = true;
+            video.loop = true;
+            video.muted = true;
+            video.playsInline = true;
+
+            const source = document.createElement('source');
+            source.src = config.path;
+            source.type = config.path.endsWith('.webm') ? 'video/webm' : 'video/mp4';
+
+            video.appendChild(source);
+            bgContainer.appendChild(video);
+        } else if (config.type === 'slider' && config.sliderPaths && config.sliderPaths.length > 0) {
+            config.sliderPaths.forEach((path, idx) => {
+                const slide = document.createElement('div');
+                slide.className = `bg-slide absolute inset-0 bg-cover bg-center mix-blend-luminosity transform scale-105 transition-opacity duration-[1500ms] ${idx === 0 ? 'opacity-30 active' : 'opacity-0'}`;
+                slide.style.backgroundImage = `url('${path}')`;
+                slide.setAttribute('id', `slide-${idx + 1}`);
+                bgContainer.appendChild(slide);
+            });
+
+            if (config.sliderPaths.length > 1) {
+                let currentSlideIdx = 0;
+                setInterval(() => {
+                    const slides = bgContainer.querySelectorAll('.bg-slide');
+                    if (slides.length < 2) return;
+
+                    slides[currentSlideIdx].classList.remove('opacity-30', 'active');
+                    slides[currentSlideIdx].classList.add('opacity-0');
+
+                    currentSlideIdx = (currentSlideIdx + 1) % slides.length;
+
+                    slides[currentSlideIdx].classList.remove('opacity-0');
+                    slides[currentSlideIdx].classList.add('opacity-30', 'active');
+                }, 8000);
             }
-            slideToggle = !slideToggle;
+        } else {
+            // Default static image
+            const imgDiv = document.createElement('div');
+            imgDiv.className = 'absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity transform scale-105';
+            imgDiv.style.backgroundImage = `url('${config.path}')`;
+            bgContainer.appendChild(imgDiv);
         }
-    }, 8000); // Dynamic crossfade loop executes every 8 seconds
+    };
+
+    initAppBackground();
 
 
     // ---------------------------------------------------------
