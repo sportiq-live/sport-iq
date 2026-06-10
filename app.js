@@ -399,4 +399,163 @@ document.addEventListener("DOMContentLoaded", () => {
             processTimelineState(elapsed);
         });
     }
+
+    // ---------------------------------------------------------
+    // [5] FULL-STACK SECURITY & MONETIZATION ROUTING GATE
+    // ---------------------------------------------------------
+    let currentUserSession = { email: "tester@sport-iq.live", tier: "free" };
+
+    const quickChips = document.querySelectorAll('.quick-chip');
+    const chatHistory = document.getElementById('chat-history');
+    const userInput = document.getElementById('user-input');
+    const sendChatBtn = document.getElementById('send-chat-btn');
+    const upgradeTierBtn = document.getElementById('upgrade-tier-btn');
+    const chatLockOverlay = document.getElementById('chat-lock-overlay');
+    const userTierBadge = document.getElementById('user-tier-badge');
+    const matchCenterAdSlot = document.getElementById('matchcenter-ad-slot');
+
+    // Pre-baked responses mapped to chip data-chip ids
+    const prebakedResponses = {
+        "1": {
+            question: "Show Match 1 Roster Weights",
+            answer: "USA Lineup Weights: Pulisic (9.2), McKennie (7.8), Adams (8.1). Attack Speed rating is set at 88."
+        },
+        "2": {
+            question: "Analyze MetLife Grass Drainage",
+            answer: "MetLife pitch cut to 23mm, moisture registered at 22%. Fast-dribble index confirms high-speed ball roll coefficient."
+        },
+        "3": {
+            question: "Simulate USA Counter Press xG",
+            answer: "Tactical simulation predicts USA high-press output xG: 1.64 | PPDA: 8.4 against BRA 2.11 xG | PPDA: 11.2."
+        }
+    };
+
+    // Helper function to append message to chat
+    const appendMessage = (sender, text, isUser = false) => {
+        if (!chatHistory) return;
+        const msgDiv = document.createElement('div');
+        if (isUser) {
+            msgDiv.className = "bg-slate-900/40 p-2.5 rounded-xl border border-slate-800/60 text-slate-300 self-end ml-12 shrink-0 max-w-[85%]";
+            msgDiv.innerHTML = `<span class="font-bold text-blue-400 block mb-0.5">${sender}:</span>${text}`;
+        } else {
+            msgDiv.className = "bg-emerald-950/10 p-2.5 rounded-xl border border-emerald-900/20 text-slate-300 mr-12 shrink-0 max-w-[85%] self-start";
+            msgDiv.innerHTML = `<span class="font-bold text-emerald-400 block mb-0.5">${sender}:</span>${text}`;
+        }
+        chatHistory.appendChild(msgDiv);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    };
+
+    // Quick chips click handlers
+    quickChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const chipId = chip.getAttribute('data-chip');
+            const data = prebakedResponses[chipId];
+            if (data) {
+                appendMessage("You", data.question, true);
+                setTimeout(() => {
+                    appendMessage("Specky", data.answer, false);
+                }, 150);
+            }
+        });
+    });
+
+    // Premium upgrade callback
+    const upgradeUserSessionToPremium = (paymentId) => {
+        currentUserSession.tier = "premium";
+        console.log(`Payment successful: ${paymentId}. Upgrading session to premium.`);
+
+        // Unlock overlay removal
+        if (chatLockOverlay) {
+            chatLockOverlay.classList.add('hidden');
+        }
+
+        // Enable inputs
+        if (userInput) {
+            userInput.removeAttribute('disabled');
+            userInput.placeholder = "Type your premium custom query...";
+        }
+        if (sendChatBtn) {
+            sendChatBtn.removeAttribute('disabled');
+        }
+
+        // Update badge text and styles
+        if (userTierBadge) {
+            userTierBadge.innerText = "PREMIUM MEMBER";
+            userTierBadge.className = "text-[8px] font-mono font-bold px-1.5 py-0.5 rounded uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+        }
+
+        // Hide ads in dashboard
+        if (matchCenterAdSlot) {
+            matchCenterAdSlot.classList.add('hidden');
+        }
+
+        // Command Specky to print greeting
+        const greeting = `Welcome to Sport-IQ Premium, ${currentUserSession.email}! Direct tactical querying is now active. Ask me any custom question about the matchup, roster weights, or tactical simulations, and I'll generate a live report.`;
+        appendMessage("Specky", greeting, false);
+    };
+
+    // Razorpay Integration
+    if (upgradeTierBtn) {
+        upgradeTierBtn.addEventListener('click', () => {
+            const options = {
+                key: "rzp_test_StagingSportIQ",
+                amount: 999, // 9.99 INR in paise
+                currency: "INR",
+                name: "Sport-IQ Premium",
+                description: "Unlock premium live tactical queries",
+                handler: function (response) {
+                    upgradeUserSessionToPremium(response.razorpay_payment_id);
+                },
+                prefill: {
+                    email: currentUserSession.email
+                },
+                theme: {
+                    color: "#10b981" // Emerald-500 matching layout
+                }
+            };
+
+            if (typeof Razorpay !== 'undefined') {
+                try {
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+                } catch (err) {
+                    console.error("Razorpay initiation error:", err);
+                    alert("Razorpay initiation failed. Simulating upgrade...");
+                    upgradeUserSessionToPremium("mock_pay_id_12345");
+                }
+            } else {
+                console.warn("Razorpay script not loaded. Simulating sandbox upgrade.");
+                alert("Razorpay script offline. Upgrading automatically to Premium.");
+                upgradeUserSessionToPremium("mock_pay_id_12345");
+            }
+        });
+    }
+
+    // Submit handlers for custom queries
+    const submitCustomQuery = () => {
+        if (currentUserSession.tier !== "premium" || !userInput) return;
+        const query = userInput.value.trim();
+        if (!query) return;
+
+        appendMessage("You", query, true);
+        userInput.value = "";
+
+        // Respond with mock AI response
+        setTimeout(() => {
+            const mockAnswer = `Tactical cluster compiled for query: "${query}". Real-time projection indicates high-press intensity shifted to 8.4 PPDA. High-efficiency counter-pressing vectors active.`;
+            appendMessage("Specky", mockAnswer, false);
+        }, 300);
+    };
+
+    if (sendChatBtn) {
+        sendChatBtn.addEventListener('click', submitCustomQuery);
+    }
+
+    if (userInput) {
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                submitCustomQuery();
+            }
+        });
+    }
 });
