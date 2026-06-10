@@ -44,6 +44,72 @@ document.addEventListener("DOMContentLoaded", () => {
     const vAnalytics = document.getElementById('view-analytics');
     const vMatchCenter = document.getElementById('view-matchcenter');
 
+    const loadMatchCenterNews = async () => {
+        const newsContainer = document.getElementById('matchcenter-news-container');
+        if (!newsContainer) return;
+
+        // Prevent fetching multiple times per session unless refreshed
+        if (newsContainer.getAttribute('data-loaded') === 'true') return;
+
+        try {
+            // Loading placeholder state
+            newsContainer.innerHTML = `
+                <div class="flex-1 flex flex-col items-center justify-center py-16 text-slate-500 space-y-3">
+                    <span class="w-5 h-5 rounded-full border-2 border-slate-800 border-t-emerald-400 animate-spin"></span>
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-slate-400">Ingesting live scraping feeds...</span>
+                </div>
+            `;
+
+            const res = await fetch('/api/scrape/matchday');
+            if (!res.ok) throw new Error('Ingestion pipeline offline');
+
+            const data = await res.json();
+
+            if (data && data.articles && data.articles.length > 0) {
+                newsContainer.innerHTML = data.articles.map(article => `
+                    <article class="bg-slate-900/50 border border-slate-800 p-4 rounded-xl space-y-2 hover:border-slate-700/60 transition-colors shrink-0">
+                        <div class="flex justify-between items-center text-[9px] font-mono">
+                            <span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">MATCH ${data.matchId} FEED // SCRAPE OK</span>
+                            <span class="text-slate-500">${article.timestamp}</span>
+                        </div>
+                        <h3 class="text-xs font-bold text-slate-200">${article.title}</h3>
+                        <p class="text-[11px] text-slate-400 leading-relaxed">${article.content}</p>
+                        <div class="flex items-center space-x-4 pt-1 text-[9px] text-slate-500 font-mono">
+                            <div class="flex items-center space-x-1"><i data-lucide="shield-alert" class="w-3 h-3 text-slate-600"></i><span>Ref: ${data.referee}</span></div>
+                            <div class="flex items-center space-x-1"><i data-lucide="maximize" class="w-3 h-3 text-slate-600"></i><span>Pitch: ${data.pitchDimensions}</span></div>
+                        </div>
+                    </article>
+                `).join('');
+
+                newsContainer.setAttribute('data-loaded', 'true');
+
+                // Initialize Lucide icons on dynamically loaded templates
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            } else {
+                newsContainer.innerHTML = `<p class="text-xs text-slate-500 p-4">No active scraping streams found.</p>`;
+            }
+        } catch (err) {
+            console.warn("Matchday scrape routing failed, loading fallback metrics:", err);
+            // Local fallback if serverless environment is not active
+            newsContainer.innerHTML = `
+                <div class="p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-xs font-mono space-y-2 shrink-0">
+                    <p class="font-bold">>> [INGESTION WIRE OFFLINE / LOCAL CACHE ACTIVE] <<</p>
+                    <p class="text-[10px] text-rose-300 leading-relaxed">Could not establish connection to /api/scrape/matchday. Using offline compiled parameters.</p>
+                </div>
+                <article class="bg-slate-900/50 border border-slate-800 p-4 rounded-xl space-y-2 opacity-50 shrink-0">
+                    <div class="flex justify-between items-center text-[9px] font-mono">
+                        <span class="bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-bold">MATCH 1 CACHED WIRE</span>
+                        <span class="text-slate-500">Offline cached</span>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-300">MetLife Stadium Surface Metrics Logged</h3>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">Factual preview indexing finalized for initial cluster mapping. Scrape loop confirmation 100%.</p>
+                </article>
+            `;
+        }
+    };
+
     const handleTabRouting = (targetView) => {
         if (targetView === 'analytics') {
             vAnalytics.classList.remove('hidden');
@@ -55,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
             vMatchCenter.classList.remove('hidden');
             btnAnalytics.className = "tab-btn inactive flex-1 text-[11px] font-bold uppercase tracking-wider py-2.5 px-3 rounded-lg transition cursor-pointer text-center";
             btnMatchCenter.className = "tab-btn active flex-1 text-[11px] font-bold uppercase tracking-wider py-2.5 px-3 rounded-lg shadow transition cursor-pointer text-center";
+            loadMatchCenterNews();
         }
     };
 
