@@ -197,7 +197,12 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
     let currentShotIdx = 0;
-    let timelineTimeouts = [];
+    let isPaused = false;
+    let elapsed = 0; // ms spent in current shot cycle
+    let lastTickTime = Date.now();
+    let currentIntervalState = -1; // -1: initial, 0: pre-kick, 1: left kick, 2: mid-flight, 3: right kick, 4: return flight
+
+    const activeShot = () => SHOTS[currentShotIdx];
 
     // Facial expression state definitions
     const setExpressionBase = () => {
@@ -232,89 +237,166 @@ document.addEventListener("DOMContentLoaded", () => {
         mouth.style.borderRadius = '0 0 12px 12px';
     };
 
-    const clearTimeouts = () => {
-        timelineTimeouts.forEach(t => clearTimeout(t));
-        timelineTimeouts = [];
-    };
-
     const runShotSequencer = () => {
-        if (!speckyBall || !animContainer || !bubble || !bubbleText) return;
+        if (!speckyBall || !animContainer) return;
 
-        // Clear previous state
-        clearTimeouts();
+        // Clear all previous shot classes
         SHOTS.forEach(s => animContainer.classList.remove(s.class));
+
+        // Reset kicker highlights
         if (pLeft) pLeft.classList.remove('active-kicker');
         if (pRight) pRight.classList.remove('active-kicker');
 
-        const activeShot = SHOTS[currentShotIdx];
-        animContainer.classList.add(activeShot.class);
-
-        // 1. Initial State: Left kicker active
-        setExpressionBase();
-        if (pLeft) pLeft.classList.add('active-kicker');
-
-        // 2. Impact Point 1: Left player hits the ball (0.2s mark)
-        timelineTimeouts.push(setTimeout(() => {
-            setExpressionSurprised();
-            bubbleText.innerText = activeShot.leftText;
-            bubble.style.opacity = '1';
-            bubble.style.transform = 'translateY(0)';
-            speckyBall.style.boxShadow = "0 25px 50px -12px rgba(59,130,246, 0.7)"; // Glow Blue
-        }, 200));
-
-        // 3. Flight Phase: Ball mid-air (1.1s mark)
-        timelineTimeouts.push(setTimeout(() => {
-            setExpressionConfused();
-            bubble.style.opacity = '0';
-            bubble.style.transform = 'translateY(2px)';
-            if (pLeft) pLeft.classList.remove('active-kicker');
-            if (pRight) pRight.classList.add('active-kicker');
-        }, 1100));
-
-        // 4. Impact Point 2: Right player hits the ball back (2.2s mark)
-        timelineTimeouts.push(setTimeout(() => {
-            setExpressionSurprised();
-            bubbleText.innerText = activeShot.rightText;
-            bubble.style.opacity = '1';
-            bubble.style.transform = 'translateY(0)';
-            speckyBall.style.boxShadow = "0 25px 50px -12px rgba(244,63,94, 0.7)"; // Glow Rose
-        }, 2200));
-
-        // 5. Flight Phase Back: Ball returning (3.2s mark)
-        timelineTimeouts.push(setTimeout(() => {
-            setExpressionBase();
-            bubble.style.opacity = '0';
-            bubble.style.transform = 'translateY(2px)';
-            speckyBall.style.boxShadow = "none";
-            if (pRight) pRight.classList.remove('active-kicker');
-        }, 3200));
-
-        // Advance index for next cycle
-        currentShotIdx = (currentShotIdx + 1) % SHOTS.length;
+        // Apply new active shot class
+        const shot = activeShot();
+        animContainer.classList.add(shot.class);
     };
 
-    // Start running the sequence
+    const processTimelineState = (currentElapsed) => {
+        if (!speckyBall || !bubble || !bubbleText) return;
+
+        const shot = activeShot();
+
+        if (currentElapsed >= 0 && currentElapsed < 225) {
+            // Phase 0: Left Kicker Active, preparing
+            if (currentIntervalState !== 0) {
+                currentIntervalState = 0;
+                setExpressionBase();
+                bubble.style.opacity = '0';
+                bubble.style.transform = 'translateY(2px)';
+                speckyBall.style.boxShadow = "none";
+                if (pLeft) pLeft.classList.add('active-kicker');
+                if (pRight) pRight.classList.remove('active-kicker');
+            }
+        } 
+        else if (currentElapsed >= 225 && currentElapsed < 1125) {
+            // Phase 1: Left Impact! (Blue Glow, Surprised)
+            if (currentIntervalState !== 1) {
+                currentIntervalState = 1;
+                setExpressionSurprised();
+                bubbleText.innerText = shot.leftText;
+                bubble.style.opacity = '1';
+                bubble.style.transform = 'translateY(0)';
+                // Hardware accelerated drop-shadow glow matching team colors
+                speckyBall.style.boxShadow = "0 0 35px 8px rgba(59, 130, 246, 0.75)"; 
+                if (pLeft) pLeft.classList.add('active-kicker');
+                if (pRight) pRight.classList.remove('active-kicker');
+            }
+        } 
+        else if (currentElapsed >= 1125 && currentElapsed < 2475) {
+            // Phase 2: Ball in flight to Right Kicker (Confused, no glow)
+            if (currentIntervalState !== 2) {
+                currentIntervalState = 2;
+                setExpressionConfused();
+                bubble.style.opacity = '0';
+                bubble.style.transform = 'translateY(2px)';
+                speckyBall.style.boxShadow = "none";
+                if (pLeft) pLeft.classList.remove('active-kicker');
+                if (pRight) pRight.classList.add('active-kicker');
+            }
+        } 
+        else if (currentElapsed >= 2475 && currentElapsed < 3375) {
+            // Phase 3: Right Impact! (Rose Glow, Surprised)
+            if (currentIntervalState !== 3) {
+                currentIntervalState = 3;
+                setExpressionSurprised();
+                bubbleText.innerText = shot.rightText;
+                bubble.style.opacity = '1';
+                bubble.style.transform = 'translateY(0)';
+                // Hardware accelerated drop-shadow glow matching team colors
+                speckyBall.style.boxShadow = "0 0 35px 8px rgba(244, 63, 94, 0.75)"; 
+                if (pLeft) pLeft.classList.add('active-kicker');
+                if (pRight) pRight.classList.add('active-kicker');
+            }
+        } 
+        else if (currentElapsed >= 3375) {
+            // Phase 4: Ball in flight back to Left Kicker (Base, no glow)
+            if (currentIntervalState !== 4) {
+                currentIntervalState = 4;
+                setExpressionBase();
+                bubble.style.opacity = '0';
+                bubble.style.transform = 'translateY(2px)';
+                speckyBall.style.boxShadow = "none";
+                if (pLeft) pLeft.classList.remove('active-kicker');
+                if (pRight) pRight.classList.remove('active-kicker');
+            }
+        }
+    };
+
+    // Micro-interval requestAnimationFrame Ticker loop
+    const tick = () => {
+        const now = Date.now();
+        const delta = now - lastTickTime;
+        lastTickTime = now;
+
+        if (!isPaused) {
+            elapsed += delta;
+            if (elapsed >= 4500) {
+                elapsed = 0;
+                currentIntervalState = -1; // Reset state trigger
+                currentShotIdx = (currentShotIdx + 1) % SHOTS.length;
+                runShotSequencer();
+            }
+            processTimelineState(elapsed);
+        }
+
+        requestAnimationFrame(tick);
+    };
+
+    // Initialize sequence and start Ticker
     if (speckyBall && animContainer) {
         runShotSequencer();
-        setInterval(runShotSequencer, 4500); // Sequence loops every 4.5 seconds
+        requestAnimationFrame(tick);
     }
 
 
     // ---------------------------------------------------------
-    // [4] DATA OVERLAY INTERACTIVE MODAL OVERLAYS
+    // [4] DATA OVERLAY INTERACTIVE MODAL & HOVER CONTROLS
     // ---------------------------------------------------------
     const dataModal = document.getElementById('data-modal');
     const closeModalBtn = document.getElementById('close-modal-btn');
 
-    if (speckyBall && dataModal && closeModalBtn) {
+    // Hover listeners to pause trajectory and render alert welcoming stance
+    if (speckyBall && animContainer && bubble && bubbleText) {
+        speckyBall.addEventListener('mouseenter', () => {
+            isPaused = true;
+            animContainer.classList.add('animation-paused');
+            setExpressionExcited();
+            bubbleText.innerText = "Welcome to Sport-IQ! Click me to inspect tactical matchups! ⚽";
+            bubble.style.opacity = '1';
+            bubble.style.transform = 'translateY(0)';
+            speckyBall.style.boxShadow = "0 0 35px 8px rgba(16, 185, 129, 0.85)"; // Emerald welcoming glow
+        });
+
+        speckyBall.addEventListener('mouseleave', () => {
+            if (dataModal && !dataModal.classList.contains('hidden')) return; // Remain paused if modal is active
+            isPaused = false;
+            lastTickTime = Date.now(); // Reset delta baseline to avoid time jump
+            animContainer.classList.remove('animation-paused');
+            
+            // Instantly restore visual status based on current elapsed state
+            currentIntervalState = -1; // force state recalculation
+            processTimelineState(elapsed);
+        });
+    }
+
+    // Click listeners to open tactical ledger
+    if (speckyBall && dataModal && closeModalBtn && animContainer && bubble) {
         speckyBall.addEventListener('click', () => {
             dataModal.classList.remove('hidden');
+            isPaused = true;
+            animContainer.classList.add('animation-paused');
             setExpressionExcited();
+            bubble.style.opacity = '0';
         });
 
         closeModalBtn.addEventListener('click', () => {
             dataModal.classList.add('hidden');
-            setExpressionBase();
+            isPaused = false;
+            lastTickTime = Date.now(); // Reset delta baseline
+            animContainer.classList.remove('animation-paused');
+            currentIntervalState = -1; // force state recalculation
+            processTimelineState(elapsed);
         });
     }
 });

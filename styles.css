@@ -385,3 +385,8 @@
                       linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
     background-size: 100% 100%, 20px 20px, 20px 20px;
 }
+
+/* Play state control for micro-interval sync and hover effects */
+.animation-paused, .animation-paused * {
+    animation-play-state: paused !important;
+}
